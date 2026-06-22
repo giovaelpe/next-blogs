@@ -1,10 +1,7 @@
-type Blog = {
-    id: number,
-    title: string,
-    url: string,
-    author: string,
-    likes: number
-}
+import {blogs} from "../../db/schema";
+import {db} from "../../db/index";
+import { eq, like } from "drizzle-orm";
+
 
 type NewBlogEntry = {
     title: string,
@@ -13,28 +10,28 @@ type NewBlogEntry = {
     likes: number
 }
 
+export const getBlogs = async() => (await db.query.blogs.findMany()).sort((a,b) => Number(b.likes) - Number(a.likes));
 
-const blogs = [
-    {
-        id: 0,
-        title: "Tailwind CSS vs Bootstrap 2026: The Definitive CSS Framework Comparison",
-        url: "https://tech-insider.org/tailwind-css-vs-bootstrap-2026/",
-        author: "Marcus Chen",
-        likes: 0
-    },
-    {
-        id: 1,
-        title: "Guitarra clásica y popular: ¿cuáles son sus diferencias?",
-        url: "https://www.cifraclub.com/blog/guitarra-clasica-y-popular/",
-        author: "Gustavo Morais",
-        likes: 0
-    }
-];
-
-export const getBlogs = () => blogs;
-
-export const getOneBlog = (id: number) => {
-    return blogs.find(blog => blog.id === id);
+export const getOneBlog = async (id: number) => {
+    return db.query.blogs.findFirst({
+        where: eq(blogs.id, id)
+    })
 }
 
-export const addBlog = (newBlog: NewBlogEntry) => blogs.push({ id: blogs.length, title: newBlog.title, url: newBlog.url, author: newBlog.author, likes: newBlog.likes }); 
+export const addBlog = async(newBlog: NewBlogEntry) => await db.insert(blogs).values({title: newBlog.title, url: newBlog.url, author: newBlog.author});
+
+export const addLike = async(id:number) => {
+    const blog = await db.query.blogs.findFirst({
+        where: eq(blogs.id, id)
+    });
+    if(blog){
+        await db.update(blogs)
+        .set({likes: (Number(blog.likes)+1).toString()})
+        .where(eq(blogs.id, id))
+    }
+} 
+
+export const searchBlogByTitle = async(title:string) => {
+    return await db.select().from(blogs)
+    .where(like(blogs.title, `%${title}%`));
+}

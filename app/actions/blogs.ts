@@ -1,6 +1,6 @@
 "use server"
 import { revalidatePath } from "next/cache";
-import { addBlog, getOneBlog } from "../services/blogs";
+import { addBlog, getOneBlog, addLike } from "../services/blogs";
 import { notFound, redirect } from "next/navigation";
 
 export const createBlog = async(formData:FormData) => {
@@ -18,15 +18,10 @@ export const createBlog = async(formData:FormData) => {
 }
 
 export async function giveLike(formData:FormData){
-    const id = formData.get("id") as string;
-    const blog = getOneBlog(Number(id));
-    if(!blog){
-        notFound();
-    }
-    blog.likes = blog.likes+1;
-    revalidatePath("/blogs");
-    revalidatePath(`/blogs/${blog.id}`)
-    redirect(`/blogs/${id}`)
+    const id = formData.get("id")
+    await addLike(Number(id));
+    revalidatePath(`/blogs/${id}`, "page");
+    redirect(`/blogs/${id}`);
 }
 
 export async function searchBlog(formData:FormData) {

@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { getBlogs } from "../services/blogs";
+import { getBlogs, searchBlogByTitle } from "../services/blogs";
 import { searchBlog } from "../actions/blogs";
 
+
+
 export default async function Blogs({searchParams} : {searchParams: Promise<{title?:string}>}) {
-    const allBlogs = getBlogs()
+    const allBlogs = await getBlogs()
     const {title} = await searchParams;
-    const blogs = title? allBlogs.filter(blog => blog.title.toLowerCase().includes(title.toLowerCase())) : allBlogs;
+    const blogs = title? await searchBlogByTitle(title) : allBlogs;
     return (
         <div>
             <h1>List of blogs</h1>
@@ -15,7 +17,7 @@ export default async function Blogs({searchParams} : {searchParams: Promise<{tit
             </form>
             <ul>
                 {
-                    blogs.sort((a, b) => b.likes - a.likes).map((blog, index) => {
+                    blogs.map((blog, index:number) => {
                         return (
                             <li key={index}>
                                 <Link href={`/blogs/${blog.id}`}>
