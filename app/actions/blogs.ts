@@ -24,7 +24,13 @@ export async function giveLike(formData:FormData){
         notFound();
     }
     blog.likes = blog.likes+1;
-    revalidatePath("blogs");
+    revalidatePath("/blogs");
     revalidatePath(`/blogs/${blog.id}`)
     redirect(`/blogs/${id}`)
+}
+
+export async function searchBlog(formData:FormData) {
+    const title = formData.get("title") as string;
+    revalidatePath("/blogs");
+    redirect(`/blogs?title=${title}`);
 }
