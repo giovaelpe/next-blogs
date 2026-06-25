@@ -7,7 +7,7 @@ export const createBlog = async(formData:FormData) => {
     const author = formData.get('author') as string;
     const url = formData.get('url') as string;
     const title = formData.get('title') as string;
-    addBlog({
+    await addBlog({
         author,
         url,
         title,
