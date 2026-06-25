@@ -1,10 +1,10 @@
 "use server"
 import { revalidatePath } from "next/cache";
-import { addBlog, getOneBlog, addLike } from "../services/blogs";
-import { notFound, redirect } from "next/navigation";
+import { addBlog, addLike } from "../services/blogs";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
-export const createBlog = async(formData:FormData) => {
+export const createBlog = async(prevState:{error:string},formData:FormData) => {
     const session = await auth();
     if(!session){
         redirect("/login")
@@ -12,6 +12,15 @@ export const createBlog = async(formData:FormData) => {
     const author = formData.get('author') as string;
     const url = formData.get('url') as string;
     const title = formData.get('title') as string;
+    if(!author || author.length < 5){
+        return {error: "Author must be present with at least 5 characters lenght"}
+    }
+    if(!url || url.length < 5){
+        return {error: "URL must be present with at least 5 characters lenght"}
+    }
+    if(!title || title.length < 5){
+        return {error: "Title must be present with at least 5 characters lenght"}
+    }
     await addBlog({
         author,
         url,
