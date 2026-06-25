@@ -20,7 +20,13 @@ export const NavBar = () => {
                     <em>{session.user?.name} logged in </em>{" "}
                     <button onClick={() => signOut()}>logout</button>
                 </>
-            ) : <Link href="/login">Login</Link>}
+            ) : (
+                <>
+                <Link href="/login">Login</Link>
+                {"  |  "}
+                <Link href="/users/new">Register users</Link>
+                </>
+            )}
         </nav>
     )
 }
