@@ -4,7 +4,7 @@ import { addBlog, addLike } from "../services/blogs";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
-export const createBlog = async(prevState:{errors:object, values:object},formData:FormData) => {
+export const createBlog = async(prevState:{errors:object, values:object, success? : boolean},formData:FormData) => {
     const session = await auth();
     if(!session){
         redirect("/login")
@@ -24,7 +24,7 @@ export const createBlog = async(prevState:{errors:object, values:object},formDat
     }
 
     if(Object.keys(errors).length > 0){
-        return {errors, values: {title, author, url}}
+        return {errors, values: {title, author, url}, success:false}
     }
     await addBlog({
         author,
@@ -33,7 +33,7 @@ export const createBlog = async(prevState:{errors:object, values:object},formDat
         likes:0
     });
     revalidatePath("/blogs");
-    redirect("/blogs");
+    return {errors: {author:"", title:"", url:""}, success: true, values: {title, author, url}}
 }
 
 export async function giveLike(formData:FormData){

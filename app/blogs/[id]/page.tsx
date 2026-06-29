@@ -11,13 +11,13 @@ export default async function BlogPage({ params }: { params: Promise<{ id: strin
     }
     return (
         <div>
-            <h2>{blog.title}</h2>
-            <h3>Author: {blog.author}</h3>
-            <h3>URL: {blog.url}</h3>
-            <h4>Likes: {blog.likes}</h4>
+            <h2 className="text-4xl m-2">{blog.title}</h2>
+            <h3 className="text-3x2 m-1.5">Author: {blog.author}</h3>
+            <h3 className="m-1.5">URL: {blog.url}</h3>
+            <h4 className="m-1.5">Likes: {blog.likes}</h4>
             <form action={giveLike}>
                 <input type="hidden" name="id" value={blog.id} />
-                <button type="submit">give like</button>
+                <button type="submit" className="bg-gray-600 p-3.5 m-1.5 rounded-2xl">give like</button>
             </form>
         </div>
     )
