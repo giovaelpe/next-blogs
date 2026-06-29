@@ -15,6 +15,13 @@
       "when": 1782388568574,
       "tag": "0001_icy_post",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782737765764,
+      "tag": "0002_youthful_loners",
+      "breakpoints": true
     }
   ]
 }

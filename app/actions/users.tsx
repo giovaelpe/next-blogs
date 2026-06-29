@@ -5,6 +5,8 @@ import { users } from "@/db/schema";
 import bcrypt from "bcryptjs";
 import { eq, like } from "drizzle-orm";
 import { redirect } from "next//navigation";
+import { revalidatePath } from "next/cache";
+import {v4 as uuid} from "uuid";
 
 export const registerUser = async (prevState: { errors: object, values: object }, formData: FormData) => {
     const username = (formData.get("username") as string).trim();
@@ -39,4 +41,12 @@ export const registerUser = async (prevState: { errors: object, values: object }
     await db.insert(users).values({ name, username, passwordHash });
 
     redirect("/login");
+}
+
+export const generateToken = async (formData: FormData) => {
+    const username = formData.get("username") as string;
+    const newToken = uuid();
+    await db.update(users).set({token: newToken}).where(eq(users.username, username));
+    revalidatePath("/me");
+    redirect("/me");
 }
