@@ -3,18 +3,20 @@ import { getCurrentUser } from "../services/session"
 import { asc } from "drizzle-orm";
 import { generateToken } from "../actions/users";
 import { getReadlingList } from "../services/readingLists";
+import { addBlogToReadingList, markAsRead } from "../actions/readingLists";
 
 
-export default async function MePage(){
+export default async function MePage() {
     const user = await getCurrentUser();
-    if(!user){
+    if (!user) {
         redirect("/login");
     }
-    const readingList = await getReadlingList(user.id);
-    const token = user.token? user.token : " No token yet for this user";
-    return(
+    const readingListPending = await getReadlingList(user.id);
+    const readingListDone = await getReadlingList(user.id, true);
+    const token = user.token ? user.token : " No token yet for this user";
+    return (
         <div className="flex-col justify-between">
-            <h2>My profile</h2>
+            <h1 className="text-2xl">My profile</h1>
             <p>
                 <strong>Name: </strong>
                 {user.name}
@@ -25,18 +27,39 @@ export default async function MePage(){
             </p>
             <hr />
             <div>
-                <h2>Reading List :</h2>
-                <ul>
-                    {
-                        readingList.map(item => {
-                            return (
-                                <li key={item.id}>
-                                    {item.blog.title}
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
+                <h1>Reading List </h1>
+                <div className="bg-amber-100 text-black p-1.5 mb-1.5">
+                    <h2 className="text-2xl">Unread ({readingListPending.length})</h2>
+                    <ul>
+                        {
+                            readingListPending.map(item => {
+                                return (
+                                    <li key={item.id} className="flex mb-1 items-center">
+                                        {item.blog.title}
+                                        <form action={markAsRead}>
+                                            <input type="hidden" name="id" value={item.id} />
+                                            <button type="submit" className="bg-green-600 py-0.5 px-1.5 m-1.5 rounded">mark as read</button>
+                                        </form>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>
+                <div className="bg-green-300 text-black p-1.5">
+                    <h2 className="text-2xl">Read ({readingListDone.length})</h2>
+                    <ul>
+                        {
+                            readingListDone.map(item => {
+                                return (
+                                    <li key={item.id}>
+                                        {item.blog.title}
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>
             </div>
             <hr />
             <h2>API Token</h2>

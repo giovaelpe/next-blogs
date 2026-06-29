@@ -1,20 +1,25 @@
 import { readingList, } from "@/db/schema";
-import {db} from "../../db/index";
+import { db } from "../../db/index";
 import { and, eq, like, sql } from "drizzle-orm";
 import { getCurrentUser } from "./session";
 
-export const getReadlingList = async(id: number) => {
+export const getReadlingList = async (id: number, read:boolean = false) => {
     return await db.query.readingList.findMany({
-        where: eq(readingList.userId, id),
+        where: and(
+            eq(readingList.userId, id),
+            eq(readingList.read, read)
+        ),
         with: {
-            blog:true
+            blog: true
         }
     })
 }
 
-export const checkReadingList = async(id: number):Promise<boolean> => {
+
+
+export const checkReadingList = async (id: number): Promise<boolean> => {
     const user = await getCurrentUser();
-    if(!user) {
+    if (!user) {
         return false;
     }
     const check = await db.query.readingList.findFirst({
@@ -23,7 +28,7 @@ export const checkReadingList = async(id: number):Promise<boolean> => {
             eq(readingList.blogId, id)
         )
     });
-    if(check){
+    if (check) {
         return true
     }
     return false;
