@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "../services/session"
 import { asc } from "drizzle-orm";
 import { generateToken } from "../actions/users";
+import { getReadlingList } from "../services/readingLists";
 
 
 export default async function MePage(){
@@ -9,6 +10,7 @@ export default async function MePage(){
     if(!user){
         redirect("/login");
     }
+    const readingList = await getReadlingList(user.id);
     const token = user.token? user.token : " No token yet for this user";
     return(
         <div className="flex-col justify-between">
@@ -21,6 +23,21 @@ export default async function MePage(){
                 <strong>Username: </strong>
                 {user.username}
             </p>
+            <hr />
+            <div>
+                <h2>Reading List :</h2>
+                <ul>
+                    {
+                        readingList.map(item => {
+                            return (
+                                <li key={item.id}>
+                                    {item.blog.title}
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            </div>
             <hr />
             <h2>API Token</h2>
             <div>

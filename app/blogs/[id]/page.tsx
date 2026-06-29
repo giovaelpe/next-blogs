@@ -1,5 +1,7 @@
 import { giveLike } from "@/app/actions/blogs";
+import { addBlogToReadingList } from "@/app/actions/readingLists";
 import { getOneBlog } from "@/app/services/blogs";
+import { checkReadingList } from "@/app/services/readingLists";
 import { notFound } from "next/navigation";
 
 
@@ -9,6 +11,8 @@ export default async function BlogPage({ params }: { params: Promise<{ id: strin
     if (!blog) {
         notFound();
     }
+    const checkList = await checkReadingList(blog.id);
+
     return (
         <div>
             <h2 className="text-4xl m-2">{blog.title}</h2>
@@ -19,6 +23,12 @@ export default async function BlogPage({ params }: { params: Promise<{ id: strin
                 <input type="hidden" name="id" value={blog.id} />
                 <button type="submit" className="bg-gray-600 p-3.5 m-1.5 rounded-2xl">give like</button>
             </form>
+            {!checkList && (
+                <form action={addBlogToReadingList}>
+                    <input type="hidden" name="blog" value={blog.id} />
+                    <button type="submit" className="bg-green-600 p-3.5 m-1.5 rounded-2xl">add to reading list</button>
+                </form>
+            )}
         </div>
     )
 }
