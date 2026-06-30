@@ -12,6 +12,7 @@ export const registerUser = async (prevState: { errors: object, values: object }
     const username = (formData.get("username") as string).trim();
     const name = (formData.get("name") as string).trim();
     const password = formData.get("password") as string;
+    const passwordConfirm = formData.get("password-confirm") as string;
 
     const errors: Record<string, string> = {}
 
@@ -30,6 +31,9 @@ export const registerUser = async (prevState: { errors: object, values: object }
     }
     if (!password || password.length < 4) {
         errors.password = "Password required and must be at least 4 characters long";
+    }
+    if(password !== passwordConfirm){
+        errors.passwordConfirm = "Password fields do not match"
     }
 
     if (Object.keys(errors).length > 0) {

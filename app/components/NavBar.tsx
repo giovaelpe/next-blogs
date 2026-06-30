@@ -2,6 +2,7 @@
 
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
+import { redirect } from "next/navigation";
 
 export const NavBar = () => {
     const { data: session } = useSession();
@@ -21,13 +22,13 @@ export const NavBar = () => {
                     <div>
                         <Link href="/me" className="hover:underline hover:bg-gray-900 m-1.5">Me</Link>
                         <em className="m-1.5">{session.user?.name} logged in </em>{" "}
-                        <button onClick={() => signOut()} className="hover:underline hover:bg-gray-900 m-1.5">logout</button>
+                        <button onClick={() => signOut({callbackUrl: "/"})} className="hover:underline hover:bg-gray-900 m-1.5">logout</button>
                     </div>
                 ) : (
                     <div>
-                        <Link href="/login" className="hover:underline hover:bg-gray-900 m-1.5">Login</Link>
+                        <Link href="/login" className="hover:underline hover:bg-gray-900 m-1.5">login</Link>
                         {"  |  "}
-                        <Link href="/users/new" className="hover:underline hover:bg-gray-900 m-1.5">Register users</Link>
+                        <Link href="/users/new" className="hover:underline hover:bg-gray-900 m-1.5">Register</Link>
                     </div>
                 )}
             

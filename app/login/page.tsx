@@ -20,7 +20,7 @@ export default function LoginPage() {
         if (result?.error) {
             setError("Invalid username or password")
         } else {
-            router.push("/");
+            router.push("/?login=success");
             router.refresh();
         }
     }
@@ -29,7 +29,7 @@ export default function LoginPage() {
 
         <div>
             <h2 className="text-3xl m-1.5">Login</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <p data-testid="error-message" style={{ color: "red" }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>
@@ -43,7 +43,7 @@ export default function LoginPage() {
                         <input type="password" name="password" required className="bg-amber-50 m-3.5 text-black" />
                     </label>
                 </div>
-                <button type="submit" className="bg-gray-600 p-3.5 m-1.5 rounded-2xl">Login</button>
+                <button data-testid="login-button" type="submit" className="bg-gray-600 p-3.5 m-1.5 rounded-2xl">Login</button>
             </form>
         </div>
     )

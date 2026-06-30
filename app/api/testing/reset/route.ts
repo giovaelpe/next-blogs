@@ -13,5 +13,5 @@ export const DELETE = async() => {
     await db.delete(readingList);
     await db.delete(blogs);
     await db.delete(users);
-    return NextResponse.json(null,{status: 204})
+    return NextResponse.json({response: "database reset"},{status: 201})
 }
