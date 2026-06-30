@@ -46,6 +46,9 @@ jobs:
           else
             echo "✗ DATABASE_URL NOT found in .env.test"
           fi
+      - name: Use .env.test fro Drizzle
+        run: | 
+          echo "NODE_ENV=test" >> $GITHUB_ENV
 
       - name: Run database migrations
         run: npx drizzle-kit push
