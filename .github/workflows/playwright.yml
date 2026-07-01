@@ -54,8 +54,8 @@ jobs:
         run: npx drizzle-kit push
 
       - name: Run app
-        run: npm run dev
-
+        run: pm2 start npm --name next-dev -- run dev
+        
       - name: Wait for app
         run: npx wait-on http://localhost:3000
 

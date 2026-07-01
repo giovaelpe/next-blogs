@@ -6,6 +6,7 @@ import { db } from "./db/index"
 import { users } from "./db/schema"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {
